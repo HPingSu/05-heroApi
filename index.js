@@ -18,6 +18,7 @@ const upload = multer({
 }).single("avatar");
 //app使用第三方cors实现跨域
 app.use(cors());
+// --------------------数据增删改查-------------------
 //  函数封装，根据路径，获取数据
 // @param{*}file   文件路径
 // @param{*}defaultData 默认返回数据
@@ -27,7 +28,7 @@ function getFileData(file = "./json/user.json", defaultData = []) {
   try {
     //通过path拼接绝对路径
     const filePath = path.join(__dirname, file);
-    //把获取到的数据换成JS对象
+    //返回出去  //把获取的数据换成JS对象
     return JSON.parse(fs.readFileSync(filePath));
   } catch (error) {
     //如果读取失败
@@ -35,6 +36,30 @@ function getFileData(file = "./json/user.json", defaultData = []) {
     return defaultData;
   }
 }
+//保存数据
+function saveFileData(defaultData = [], file = "./json/hero.json") {
+  try {
+    const filePath = path.join(__dirname, file);
+    //写入文件
+    fs.writeFileSync(filePath, JSON.stringify(defaultData, null, 2)); //返回值是一个undefined.因此返回true
+    //写入文件的时候要变成字符串的形式 //在hero.json缩进2个空格
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+let bl = saveFileData({
+  id: 1,
+  name: "小吃货",
+  skill: "吃吃吃",
+  icon: "xxx"
+});
+if (bl) {
+  console.log("保存成功");
+} else {
+  console.log("保存失败");
+}
+// ----------下面是接口-----------------------
 //服务器在3000 端口启动
 //启动3000端口
 app.listen(3000, () => {
